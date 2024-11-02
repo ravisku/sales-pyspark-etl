@@ -4,7 +4,7 @@ import boto3
 from common_utils import trigger_glue_crawler
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import (col, current_timestamp, dayofmonth,
-                                   input_file_name, month, year)
+                                   input_file_name, month, to_date, year)
 
 # Initialize Spark Session
 spark = SparkSession.builder.appName("ETL Pipeline").getOrCreate()
@@ -31,7 +31,6 @@ def transform_silver_layer(bronze_path, silver_path):
             .withColumn("month", month(to_date("order_date", "dd/MM/yyyy")))
             .withColumn("day", dayofmonth(to_date("order_date", "dd/MM/yyyy")))
         )
-
 
         df_silver.write.partitionBy("year", "month", "day").mode("overwrite").parquet(
             silver_path
