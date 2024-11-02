@@ -2,6 +2,10 @@ provider "aws" {
   region = "eu-west-2"
 }
 
+variable "job_name" {
+  default = "my-glue-etl-job"
+}
+
 resource "aws_iam_role" "glue_role" {
   name = "glue-etl-role"
 
