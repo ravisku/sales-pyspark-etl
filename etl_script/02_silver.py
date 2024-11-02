@@ -27,10 +27,11 @@ def transform_silver_layer(bronze_path, silver_path):
 
         df_silver = (
             df.select([col(c).alias(c.lower().replace(" ", "_")) for c in df.columns])
-            .withColumn("year", year("order_date"))
-            .withColumn("month", month("order_date"))
-            .withColumn("day", dayofmonth("order_date"))
+            .withColumn("year", year(to_date("order_date", "dd/MM/yyyy")))
+            .withColumn("month", month(to_date("order_date", "dd/MM/yyyy")))
+            .withColumn("day", dayofmonth(to_date("order_date", "dd/MM/yyyy")))
         )
+
 
         df_silver.write.partitionBy("year", "month", "day").mode("overwrite").parquet(
             silver_path
