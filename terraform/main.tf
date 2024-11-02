@@ -37,6 +37,35 @@ resource "aws_s3_bucket" "sales-pyspark-etl" {
   bucket = "sales-pyspark-etl"
 }
 
+resource "aws_iam_policy" "glue_s3_access_policy" {
+  name        = "glue-s3-access-policy"
+  description = "Policy for S3 access to a specific bucket for Glue jobs"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::sales-pyspark-etl",
+          "arn:aws:s3:::sales-pyspark-etl/*"
+        ]
+      }
+    ]
+  })
+}
+
+# Attach the S3 access policy to the Glue role
+resource "aws_iam_role_policy_attachment" "glue_s3_policy_attach" {
+  role       = aws_iam_role.glue_role.name
+  policy_arn = aws_iam_policy.glue_s3_access_policy.arn
+}
+
 
 # Define Glue ETL Job for Bronze Layer
 resource "aws_glue_job" "bronze_job" {
