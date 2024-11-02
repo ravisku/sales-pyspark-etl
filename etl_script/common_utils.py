@@ -2,7 +2,7 @@ import boto3
 
 
 def trigger_glue_crawler(crawler_name):
-    client = boto3.client("glue", region_name="your-region")
+    client = boto3.client("glue", region_name="eu-west-2")
     try:
         response = client.start_crawler(Name=crawler_name)
         print(f"Triggered Glue Crawler: {crawler_name}")
