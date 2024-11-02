@@ -10,7 +10,7 @@ spark = SparkSession.builder.appName("ETL Pipeline").getOrCreate()
 # Define file paths
 silver_path = "s3://sales-pyspark-etl/target_files/silver/sales/"
 bronze_path = "s3://sales-pyspark-etl/target_files/bronze/sales/"
-crawler_name = ""
+crawler_name = "silver_crawler"
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
