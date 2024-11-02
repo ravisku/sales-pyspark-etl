@@ -36,3 +36,41 @@ resource "aws_iam_role_policy_attachment" "glue_role_attach" {
 resource "aws_s3_bucket" "sales-pyspark-etl" {
   bucket = "sales-pyspark-etl"
 }
+
+
+# Define Glue ETL Job for Bronze Layer
+resource "aws_glue_job" "bronze_job" {
+  name     = "bronze-etl-job"
+  role_arn = aws_iam_role.glue_etl_role.arn
+
+  command {
+    # GitHub Actions will provide the location of the script in S3
+    script_location = var.bronze_script_location
+    python_version  = "3"
+  }
+
+  default_arguments = {
+    "--extra-py-files" = var.common_utils_location
+  }
+}
+
+# Define Glue ETL Job for Silver Layer
+resource "aws_glue_job" "silver_job" {
+  name     = "silver-etl-job"
+  role_arn = aws_iam_role.glue_etl_role.arn
+
+  command {
+    script_location = var.silver_script_location
+    python_version  = "3"
+  }
+
+  default_arguments = {
+    "--extra-py-files" = var.common_utils_location
+  }
+}
+
+
+# Variables for script and dependency locations
+variable "bronze_script_location" {}
+variable "silver_script_location" {}
+variable "common_utils_location" {}
