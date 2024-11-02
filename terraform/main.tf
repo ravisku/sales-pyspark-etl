@@ -2,6 +2,16 @@ provider "aws" {
   region = "eu-west-2"
 }
 
+terraform {
+  backend "s3" {
+    bucket         = "terraform-state-bucket-etl"
+    key            = "terraform.tfstate"
+    region         = "eu-west-2"
+    encrypt        = true
+  }
+}
+
+
 resource "aws_iam_role" "glue_role" {
   name = "glue-etl-role"
 
