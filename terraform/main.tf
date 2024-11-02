@@ -2,22 +2,18 @@ provider "aws" {
   region = "eu-west-2"
 }
 
-variable "job_name" {
-  default = "my-glue-etl-job"
-}
-
 resource "aws_iam_role" "glue_role" {
   name = "glue-etl-role"
 
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [{
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "glue.amazonaws.com"
+    "Version" : "2012-10-17",
+    "Statement" : [{
+      "Action" : "sts:AssumeRole",
+      "Principal" : {
+        "Service" : "glue.amazonaws.com"
       },
-      "Effect": "Allow",
-      "Sid": ""
+      "Effect" : "Allow",
+      "Sid" : ""
     }]
   })
 }
