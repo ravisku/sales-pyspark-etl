@@ -11,7 +11,7 @@ spark = SparkSession.builder \
 # Define file paths
 bronze_path = "s3://sales-pyspark-etl/target_files/bronze/sales/"
 source_path = "s3://sales-pyspark-etl/source_files/sales_dataset.csv"
-crawler_name = ""
+crawler_name = "bronze_crawler"
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
