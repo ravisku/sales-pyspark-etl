@@ -22,3 +22,8 @@ resource "aws_iam_role_policy_attachment" "glue_role_attach" {
   role       = aws_iam_role.glue_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
 }
+
+resource "aws_s3_bucket" "sales-pyspark-etl" {
+  bucket = "sales-pyspark-etl"
+  acl    = "private"
+}
