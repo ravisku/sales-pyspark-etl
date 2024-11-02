@@ -41,7 +41,7 @@ resource "aws_s3_bucket" "sales-pyspark-etl" {
 # Define Glue ETL Job for Bronze Layer
 resource "aws_glue_job" "bronze_job" {
   name     = "bronze-etl-job"
-  role_arn = aws_iam_role.glue_etl_role.arn
+  role_arn = aws_iam_role.glue_role.arn
 
   command {
     # GitHub Actions will provide the location of the script in S3
@@ -57,7 +57,7 @@ resource "aws_glue_job" "bronze_job" {
 # Define Glue ETL Job for Silver Layer
 resource "aws_glue_job" "silver_job" {
   name     = "silver-etl-job"
-  role_arn = aws_iam_role.glue_etl_role.arn
+  role_arn = aws_iam_role.glue_role.arn
 
   command {
     script_location = var.silver_script_location
