@@ -51,9 +51,9 @@ jobs:
 
       - name: Upload scripts and dependencies to S3
         run: |
-          aws s3 cp etl_script/01_bronze.py s3://my-etl-scripts/01_bronze.py
-          aws s3 cp etl_script/02_silver.py s3://my-etl-scripts/02_silver.py
-          aws s3 cp etl_script/common_utils.zip s3://my-etl-scripts/common_utils.zip
+          aws s3 cp etl_script/01_bronze.py s3://sales-pyspark-etl/etl_script/01_bronze.py
+          aws s3 cp etl_script/02_silver.py s3://sales-pyspark-etl/etl_script/01_bronze.py
+          aws s3 cp etl_script/common_utils.zip s3://sales-pyspark-etl/etl_script/common_utils.zip
 
       - name: Initialize Terraform
         working-directory: ./terraform
