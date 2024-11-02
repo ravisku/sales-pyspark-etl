@@ -42,16 +42,17 @@ resource "aws_iam_policy" "glue_s3_access_policy" {
   description = "Policy for S3 access to a specific bucket for Glue jobs"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect" : "Allow",
+        "Action" : [
           "s3:GetObject",
           "s3:PutObject",
+          "s3:DeleteObject",
           "s3:ListBucket"
         ],
-        "Resource": [
+        "Resource" : [
           "arn:aws:s3:::sales-pyspark-etl",
           "arn:aws:s3:::sales-pyspark-etl/*"
         ]
@@ -89,8 +90,8 @@ resource "aws_glue_catalog_database" "bronze_database" {
 }
 
 resource "aws_glue_crawler" "bronze_crawler" {
-  name          = "bronze_crawler"
-  role          = aws_iam_role.glue_role.arn
+  name = "bronze_crawler"
+  role = aws_iam_role.glue_role.arn
 
   database_name = aws_glue_catalog_database.bronze_database.name
 
@@ -99,9 +100,9 @@ resource "aws_glue_crawler" "bronze_crawler" {
   }
 
   configuration = jsonencode({
-    "Version": 1.0,
-    "Grouping": {
-      "TableGroupingPolicy": "CombineCompatibleSchemas"
+    "Version" : 1.0,
+    "Grouping" : {
+      "TableGroupingPolicy" : "CombineCompatibleSchemas"
     }
   })
 }
@@ -127,8 +128,8 @@ resource "aws_glue_catalog_database" "silver_database" {
 }
 
 resource "aws_glue_crawler" "silver_crawler" {
-  name          = "silver_crawler"
-  role          = aws_iam_role.glue_role.arn
+  name = "silver_crawler"
+  role = aws_iam_role.glue_role.arn
 
   database_name = aws_glue_catalog_database.silver_database.name
 
@@ -137,9 +138,9 @@ resource "aws_glue_crawler" "silver_crawler" {
   }
 
   configuration = jsonencode({
-    "Version": 1.0,
-    "Grouping": {
-      "TableGroupingPolicy": "CombineCompatibleSchemas"
+    "Version" : 1.0,
+    "Grouping" : {
+      "TableGroupingPolicy" : "CombineCompatibleSchemas"
     }
   })
 }

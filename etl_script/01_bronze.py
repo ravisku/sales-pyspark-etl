@@ -2,11 +2,10 @@ import boto3
 import logging
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import input_file_name, current_timestamp
+from common_utils import trigger_glue_crawler
 
 # Initialize Spark Session
-spark = SparkSession.builder \
-    .appName("ETL Pipeline") \
-    .getOrCreate()
+spark = SparkSession.builder.appName("ETL Pipeline").getOrCreate()
 
 # Define file paths
 bronze_path = "s3://sales-pyspark-etl/target_files/bronze/sales/"
@@ -17,26 +16,32 @@ crawler_name = "bronze_crawler"
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def load_bronze_layer(source_path, bronze_path):
     try:
         logger.info("Starting Bronze Layer ETL process.")
-        
+
         # Read source CSV file(s)
         logger.info(f"Reading data from source path: {source_path}")
         df = spark.read.csv(source_path, header=True, inferSchema=True)
-        
+
         # Add metadata columns
         logger.info("Adding metadata columns: file_path and execution_datetime.")
-        df = df.withColumn("file_path", input_file_name()).withColumn("execution_datetime", current_timestamp())
-        
+        df = df.withColumn("file_path", input_file_name()).withColumn(
+            "execution_datetime", current_timestamp()
+        )
+
         # Write to Bronze layer with schema evolution enabled
-        logger.info(f"Writing data to Bronze path with schema evolution enabled: {bronze_path}")
+        logger.info(
+            f"Writing data to Bronze path with schema evolution enabled: {bronze_path}"
+        )
         df.write.mode("overwrite").option("mergeSchema", "true").parquet(bronze_path)
-        
+
         logger.info("Bronze Layer ETL process completed successfully.")
     except Exception as e:
         logger.error(f"Error in Bronze Layer ETL process: {e}")
         raise
+
 
 if __name__ == "__main__":
     # Execute Bronze layer ETL
