@@ -1,8 +1,9 @@
-import boto3
 import logging
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import input_file_name, current_timestamp
+
+import boto3
 from common_utils import trigger_glue_crawler
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, current_timestamp, input_file_name
 
 # Initialize Spark Session
 spark = SparkSession.builder.appName("ETL Pipeline").getOrCreate()
@@ -24,9 +25,7 @@ def transform_silver_layer(bronze_path, silver_path):
         df = spark.read.parquet(bronze_path)
 
         df_silver = (
-            df.select(
-                [col(c).alias(c.lower().replace(" ", "_")) for c in df.columns]
-            )
+            df.select([col(c).alias(c.lower().replace(" ", "_")) for c in df.columns])
             .withColumn("year", year("order_date"))
             .withColumn("month", month("order_date"))
             .withColumn("day", dayofmonth("order_date"))
