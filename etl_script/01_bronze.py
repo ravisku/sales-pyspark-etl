@@ -9,8 +9,8 @@ spark = SparkSession.builder \
     .getOrCreate()
 
 # Define file paths
-bronze_path = "s3://wt-ravi-sandbox/hema/parquet_table/bronze/"
-source_path = "s3://wt-ravi-sandbox/hema/"
+bronze_path = "s3://sales-pyspark-etl/target_files/bronze/sales/"
+source_path = "s3://sales-pyspark-etl/source_files/sales_dataset.csv"
 crawler_name = ""
 
 # Set up logging
