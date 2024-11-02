@@ -83,6 +83,30 @@ resource "aws_glue_job" "bronze_job" {
   }
 }
 
+
+resource "aws_glue_catalog_database" "bronze_database" {
+  name = "bronze"
+}
+
+resource "aws_glue_crawler" "bronze_crawler" {
+  name          = "bronze_crawler"
+  role          = aws_iam_role.glue_role.arn
+
+  database_name = aws_glue_catalog_database.bronze_database.name
+
+  s3_target {
+    path = "s3://sales-pyspark-etl/target_files/bronze/sales/"
+  }
+
+  configuration = jsonencode({
+    "Version": 1.0,
+    "Grouping": {
+      "TableGroupingPolicy": "CombineCompatibleSchemas"
+    }
+  })
+}
+
+
 # Define Glue ETL Job for Silver Layer
 resource "aws_glue_job" "silver_job" {
   name     = "silver-etl-job"
@@ -98,6 +122,27 @@ resource "aws_glue_job" "silver_job" {
   }
 }
 
+resource "aws_glue_catalog_database" "silver_database" {
+  name = "silver"
+}
+
+resource "aws_glue_crawler" "silver_crawler" {
+  name          = "silver_crawler"
+  role          = aws_iam_role.glue_role.arn
+
+  database_name = aws_glue_catalog_database.silver_database.name
+
+  s3_target {
+    path = "s3://sales-pyspark-etl/target_files/silver/sales/"
+  }
+
+  configuration = jsonencode({
+    "Version": 1.0,
+    "Grouping": {
+      "TableGroupingPolicy": "CombineCompatibleSchemas"
+    }
+  })
+}
 
 # Variables for script and dependency locations
 variable "bronze_script_location" {}
