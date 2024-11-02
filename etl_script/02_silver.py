@@ -3,7 +3,7 @@ import logging
 import boto3
 from common_utils import trigger_glue_crawler
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, current_timestamp, input_file_name
+from pyspark.sql.functions import col, current_timestamp, input_file_name,  year, month, dayofmonth
 
 # Initialize Spark Session
 spark = SparkSession.builder.appName("ETL Pipeline").getOrCreate()
