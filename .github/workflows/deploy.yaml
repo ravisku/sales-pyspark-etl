@@ -47,7 +47,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Zip common_utils.py
-        run: zip -r etl_script/common_utils.zip etl_script/common_utils.py
+        run: zip -r common_utils.zip etl_script/common_utils.py
 
       - name: Upload scripts and dependencies to S3
         run: |
