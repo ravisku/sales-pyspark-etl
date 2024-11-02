@@ -55,7 +55,7 @@ jobs:
           aws s3 cp etl_script/02_silver.py s3://my-etl-scripts/02_silver.py
           aws s3 cp etl_script/common_utils.zip s3://my-etl-scripts/common_utils.zip
 
-      - name: Init Terraform
+      - name: Initialize Terraform
         working-directory: ./terraform
         run: terraform init
 
