@@ -21,11 +21,11 @@ def transform_silver_layer(bronze_path, silver_path):
     try:
         logger.info("Starting Silver Layer ETL process.")
 
-        df = spark.read.parquet(bronze_pathinferSchema=True)
+        df = spark.read.parquet(bronze_path)
 
         df_silver = (
             df.select(
-                [col(c).alias(c.lower().replace(" ", "_")) for c in df_bronze.columns]
+                [col(c).alias(c.lower().replace(" ", "_")) for c in df.columns]
             )
             .withColumn("year", year("order_date"))
             .withColumn("month", month("order_date"))
@@ -36,7 +36,7 @@ def transform_silver_layer(bronze_path, silver_path):
             silver_path
         )
     except Exception as e:
-        logger.error(f"Error in Bronze Layer ETL process: {e}")
+        logger.error(f"Error in Silver Layer ETL process: {e}")
         raise
 
 
@@ -46,6 +46,6 @@ if __name__ == "__main__":
     transform_silver_layer(bronze_path, silver_path)
     logger.info("ETL Pipeline executed successfully.")
 
-    logger.info("Trigger glue crawler for bronze table.")
+    logger.info("Trigger glue crawler for silver table.")
     trigger_glue_crawler(crawler_name)
     logger.info("Crawler executed successfully.")
