@@ -52,4 +52,6 @@ jobs:
 
       - name: Apply Terraform
         working-directory: ./terraform
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -input=false
+        env:
+          TF_LOG: DEBUG
