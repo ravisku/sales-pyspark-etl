@@ -31,7 +31,7 @@ def load_sales_table(silver_path, gold_path):
 
         df = spark.read.parquet(silver_path)
 
-        df.createOrReplaceTempview("sales_tmp_table")
+        df.createOrReplaceTempView("sales_tmp_table")
 
         df = spark.sql(
             """
