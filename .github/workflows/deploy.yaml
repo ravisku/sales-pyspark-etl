@@ -66,6 +66,6 @@ jobs:
         env:
           TF_VAR_bronze_script_location: "s3://sales-pyspark-etl/etl_script/01_bronze.py"
           TF_VAR_silver_script_location: "s3://sales-pyspark-etl/etl_script/02_silver.py"
-          TF_VAR_silver_script_location: "s3://sales-pyspark-etl/etl_script/03_gold.py"
+          TF_VAR_gold_script_location: "s3://sales-pyspark-etl/etl_script/03_gold.py"
           TF_VAR_common_utils_location: "s3://sales-pyspark-etl/etl_script/common_utils.zip"
         run: terraform apply -auto-approve -input=false
