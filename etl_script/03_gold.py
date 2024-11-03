@@ -27,7 +27,7 @@ def load_sales_table(silver_path, gold_path):
         # Read source CSV file(s)
         logger.info(f"Reading data from silver path: {silver_path}")
 
-        sales_table_path = f"gold_path{sales_table_name}/"
+        sales_table_path = f"gold_path/{sales_table_name}/"
 
         df = spark.read.parquet(silver_path)
 
