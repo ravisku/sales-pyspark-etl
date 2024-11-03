@@ -2,7 +2,8 @@ import logging
 
 import boto3
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import current_timestamp, input_file_name
+from pyspark.sql.functions import (col, concat_ws, current_timestamp,
+                                   input_file_name)
 
 # Initialize Spark Session
 spark = SparkSession.builder.appName("ETL Pipeline").getOrCreate()
@@ -52,9 +53,9 @@ def load_sales_table(silver_path, gold_path):
                     """
         )
 
-        #df.write.partitionBy("order_date").mode("overwrite").option(
+        # df.write.partitionBy("order_date").mode("overwrite").option(
         #    "partitionOverwriteMode", "dynamic"
-        #).parquet(sales_table_path)
+        # ).parquet(sales_table_path)
 
         df.write.mode("overwrite").parquet(sales_table_path)
 
@@ -102,7 +103,7 @@ def load_customer_table(silver_path, gold_path, latest_date):
 
         df = spark.read.parquet(silver_path)
 
-        df.createOrReplaceTempview("customer_tmp_table")
+        df.createOrReplaceTempView("customer_tmp_table")
 
         query = f"""
                 SELECT
