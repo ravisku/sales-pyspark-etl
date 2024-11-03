@@ -145,7 +145,47 @@ resource "aws_glue_crawler" "silver_crawler" {
   })
 }
 
+# Define Glue ETL Job for Gold Layer
+resource "aws_glue_job" "gold_job" {
+  name     = "gold-etl-job"
+  role_arn = aws_iam_role.glue_role.arn
+
+  command {
+    # GitHub Actions will provide the location of the script in S3
+    script_location = var.gold_script_location
+    python_version  = "3"
+  }
+
+  default_arguments = {
+    "--extra-py-files" = var.common_utils_location
+  }
+}
+
+
+resource "aws_glue_catalog_database" "gold_database" {
+  name = "gold"
+}
+
+resource "aws_glue_crawler" "gold_crawler" {
+  name = "gold_crawler"
+  role = aws_iam_role.glue_role.arn
+
+  database_name = aws_glue_catalog_database.gold_database.name
+
+  s3_target {
+    path = "s3://sales-pyspark-etl/target_files/gold/"
+  }
+
+  configuration = jsonencode({
+    "Version" : 1.0,
+    "Grouping" : {
+      "TableGroupingPolicy" : "CombineCompatibleSchemas"
+    }
+  })
+}
+
 # Variables for script and dependency locations
 variable "bronze_script_location" {}
 variable "silver_script_location" {}
+variable "gold_script_location" {}
 variable "common_utils_location" {}
