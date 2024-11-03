@@ -52,9 +52,11 @@ def load_sales_table(silver_path, gold_path):
                     """
         )
 
-        df.write.partitionBy("order_date").mode("overwrite").option(
-            "partitionOverwriteMode", "dynamic"
-        ).parquet(sales_table_path)
+        #df.write.partitionBy("order_date").mode("overwrite").option(
+        #    "partitionOverwriteMode", "dynamic"
+        #).parquet(sales_table_path)
+
+        df.write.mode("overwrite").parquet(sales_table_path)
 
         logger.info("Bronze Layer ETL process completed successfully.")
     except Exception as e:
@@ -89,7 +91,7 @@ def get_latest_date(silver_path):
         raise
 
 
-def load_customer_table(silver_path, gold_path):
+def load_customer_table(silver_path, gold_path, latest_date):
     try:
         logger.info("Starting Gold Layer ETL process.")
 
