@@ -179,7 +179,6 @@ resource "aws_glue_crawler" "gold_crawler" {
   configuration = jsonencode({
     "Version" : 1.0,
     "Grouping" : {
-      "TableGroupingPolicy" : "Classify"
       "TableLevelConfiguration" : 3
     }
   })
