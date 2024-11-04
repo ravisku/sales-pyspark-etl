@@ -86,11 +86,11 @@ resource "aws_glue_job" "bronze_job" {
 
 
 resource "aws_glue_catalog_database" "bronze_database" {
-  name = "bronze_1"
+  name = "bronze"
 }
 
 resource "aws_glue_crawler" "bronze_crawler" {
-  name = "bronze_crawler_1"
+  name = "bronze_crawler"
   role = aws_iam_role.glue_role.arn
 
   database_name = aws_glue_catalog_database.bronze_database.name
