@@ -1,41 +1,68 @@
-import boto3
 import logging
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import input_file_name, current_timestamp
+
+import boto3
 from common_utils import trigger_glue_crawler
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import (
+    current_timestamp,
+    dayofmonth,
+    input_file_name,
+    month,
+    regexp_extract,
+    to_date,
+    year,
+)
 
 # Initialize Spark Session
-spark = SparkSession.builder.appName("ETL Pipeline").getOrCreate()
+spark = SparkSession.builder.appName("ETL Pipeline for bronze layer").getOrCreate()
 
-# Define file paths
+# Define file paths for source data and the Bronze layer destination.
 bronze_path = "s3://sales-pyspark-etl/target_files/bronze/sales/"
-source_path = "s3://sales-pyspark-etl/source_files/sales_dataset.csv"
+source_path = "s3://sales-pyspark-etl/source_files/"
 crawler_name = "bronze_crawler"
 
-# Set up logging
+# Set up logging configuration
+# INFO level logs will capture general information and process flow.
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 def load_bronze_layer(source_path, bronze_path):
+    """
+    Load data into the Bronze layer by reading source files, adding metadata,
+    and saving it in a partitioned format for efficient querying.
+
+    Parameters:
+    - source_path (str): S3 path for the source files.
+    - bronze_path (str): S3 path for the Bronze layer destination.
+    """
     try:
         logger.info("Starting Bronze Layer ETL process.")
 
         # Read source CSV file(s)
         logger.info(f"Reading data from source path: {source_path}")
-        df = spark.read.csv(source_path, header=True, inferSchema=True)
-
-        # Add metadata columns
-        logger.info("Adding metadata columns: file_path and execution_datetime.")
-        df = df.withColumn("file_path", input_file_name()).withColumn(
-            "execution_datetime", current_timestamp()
+        df = spark.read.csv(
+            source_path, header=True, inferSchema=True, quote='"', escape='"'
         )
 
-        # Write to Bronze layer with schema evolution enabled
+        # Add metadata and partition columns
+        logger.info("Adding metadata columns: file_path and execution_datetime.")
+        df = (
+            df.withColumn("file_path", regexp_extract(input_file_name(), "(.*/)", 1))
+            .withColumn("execution_datetime", current_timestamp())
+            .withColumn("year", year(to_date("Order Date", "dd/MM/yyyy")))
+            .withColumn("month", month(to_date("Order Date", "dd/MM/yyyy")))
+            .withColumn("day", dayofmonth(to_date("Order Date", "dd/MM/yyyy")))
+        )
+
+        # Write data to Bronze layer
+        # Using partitioning for optimized access and enabling schema evolution for data flexibility.
         logger.info(
             f"Writing data to Bronze path with schema evolution enabled: {bronze_path}"
         )
-        df.write.mode("overwrite").option("mergeSchema", "true").parquet(bronze_path)
+        df.repartition(1).write.mode("append").partitionBy(
+            "year", "month", "day"
+        ).option("mergeSchema", "true").parquet(bronze_path)
 
         logger.info("Bronze Layer ETL process completed successfully.")
     except Exception as e:
@@ -45,10 +72,11 @@ def load_bronze_layer(source_path, bronze_path):
 
 if __name__ == "__main__":
     # Execute Bronze layer ETL
-    logger.info("Starting ETL Pipeline.")
+    logger.info("Starting bronze layer ETL Pipeline.")
     load_bronze_layer(source_path, bronze_path)
-    logger.info("ETL Pipeline executed successfully.")
+    logger.info("ETL Pipeline for bronze layer executed successfully.")
 
-    logger.info("Trigger glue crawler for bronze table.")
+    # Trigger the Glue crawler to update the data catalog with new data.
+    logger.info("Triggering Glue crawler for Bronze layer table.")
     trigger_glue_crawler(crawler_name)
-    logger.info("Crawler executed successfully.")
+    logger.info("Glue crawler for Bronze layer table executed successfully.")
