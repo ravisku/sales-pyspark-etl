@@ -1,6 +1,7 @@
 import logging
 
 import boto3
+from common_utils import trigger_glue_crawler
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import (col, concat_ws, current_timestamp,
                                    input_file_name)
@@ -115,7 +116,7 @@ def load_customer_table(silver_path, gold_path, latest_date):
                     COUNT( DISTINCT 
                     CASE
                         WHEN
-                            order_date BETWEEN {latest_date}::DATE - 30 AND {latest_date} 
+                            order_date BETWEEN DATE_SUB('{latest_date}', 30) AND {latest_date} 
                         THEN
                             order_id 
                         ELSE
@@ -124,7 +125,7 @@ def load_customer_table(silver_path, gold_path, latest_date):
                 ) AS order_quantity_last_30_days, COUNT( DISTINCT 
                     CASE
                         WHEN
-                            order_date BETWEEN {latest_date}::DATE - 180 AND {latest_date} 
+                            order_date BETWEEN DATE_SUB('{latest_date}', 180) AND {latest_date} 
                         THEN
                             order_id 
                         ELSE
@@ -133,7 +134,7 @@ def load_customer_table(silver_path, gold_path, latest_date):
                 ) AS order_quantity_last_6_months, COUNT( DISTINCT 
                     CASE
                         WHEN
-                            order_date BETWEEN {latest_date}::DATE - 365 AND {latest_date} 
+                            order_date BETWEEN DATE_SUB('{latest_date}', 365) AND {latest_date} 
                         THEN
                             order_id 
                         ELSE
