@@ -7,6 +7,7 @@ This assignment consists of two main parts:
 
 ## Repository Structure
 
+```
 sales-pyspark-etl/
 ├── AWS_Data_Sharing_LF.pdf   # Data sharing design
 ├── etl_script/
@@ -24,7 +25,7 @@ sales-pyspark-etl/
 │   └── deploy.yaml           # GitHub Actions workflow for CI/CD
 ├── gold_results/             # Gold layer output
 └── README.md                 # Project documentation
-
+```
 
 
 ## AWS Design for Data Sharing
