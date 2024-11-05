@@ -7,7 +7,24 @@ This assignment consists of two main parts:
 
 ## Repository Structure
 
-sales-pyspark-etl/ ├── etl_script/ │ ├── 01_bronze.py # ETL script for Bronze layer │ ├── 02_silver.py # ETL script for Silver layer │ ├── 03_gold.py # ETL script for Gold layer │ └── common_utils.py # Common utilities for all layers ├── tests/ │ ├── test_bronze_etl.py # Tests for Bronze layer │ ├── test_silver_etl.py # Tests for Silver layer │ ├── test_gold_etl.py # Tests for Gold layer ├── terraform/ │ ├── main.tf # Terraform configuration for AWS resources ├── .github/workflows/ │ └── deploy.yaml # GitHub Actions workflow for CI/CD └── README.md # Project documentation
+sales-pyspark-etl/
+├── AWS_Data_Sharing_LF.pdf   # Data sharing design
+├── etl_script/
+│   ├── 01_bronze.py          # ETL script for Bronze layer
+│   ├── 02_silver.py          # ETL script for Silver layer
+│   ├── 03_gold.py            # ETL script for Gold layer
+│   └── common_utils.py       # Common utilities for all layers
+├── tests/
+│   ├── test_bronze_etl.py    # Tests for Bronze layer
+│   ├── test_silver_etl.py    # Tests for Silver layer
+│   ├── test_gold_etl.py      # Tests for Gold layer
+├── terraform/
+│   └── main.tf               # Terraform configuration for AWS resources
+├── .github/workflows/
+│   └── deploy.yaml           # GitHub Actions workflow for CI/CD
+├── gold_results/             # Gold layer output
+└── README.md                 # Project documentation
+
 
 
 ## AWS Design for Data Sharing
